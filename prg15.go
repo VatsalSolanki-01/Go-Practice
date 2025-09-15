@@ -7,6 +7,14 @@ type Employee interface {
 	display()
 }
 
+func salary(e Employee) float64 {
+	return e.salary()
+}
+
+func display(e Employee) {
+	e.display()
+}
+
 type FullTime struct {
 	name       string
 	baseSalary float64
