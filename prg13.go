@@ -1,5 +1,5 @@
 package main
-// Two Sum
+
 func twoSum(nums []int, target int) []int {
 	retArr := make([]int, 2)
 
