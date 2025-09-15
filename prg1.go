@@ -3,15 +3,12 @@ package main
 import "fmt"
 
 func main() {
-	arr := make([]int, 10)
-	target := 0
-	fmt.Println("enter elements :- ")
+	r := Rectangle{length: 10, width: 5}
+	s := Square{side: 7}
 
-	for i := 0; i <= 5; i++ {
-		fmt.Scan(&arr[i])
-	}
-	fmt.Println("enter target value:-")
-	fmt.Scan(&target)
+	fmt.Println("Rectangle Area:", area(r))
+	fmt.Println("Rectangle Perimeter:", perimeter(r))
 
-	fmt.Println(twoSum(arr, target))
+	fmt.Println("Square Area:", area(s))
+	fmt.Println("Square Perimeter:", perimeter(s))
 }
