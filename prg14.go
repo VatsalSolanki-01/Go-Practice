@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"math"
+)
 
 // slice of type shape
 var shapes []shape
@@ -32,7 +35,7 @@ func ShapePlayOptions(input string) {
 // to create shapes and append in the list of shapes slice
 func createShapes() {
 	var input string
-	fmt.Println("enter a to create Rectangle b to create Square")
+	fmt.Println("enter a to create Rectangle b to create Square and c to create Triangle")
 	fmt.Scan(&input)
 	switch input {
 	case "a":
@@ -51,6 +54,17 @@ func createShapes() {
 		fmt.Scan(&side)
 		var s Square
 		shapes = append(shapes, s.createSquare(side))
+
+	case "c":
+		var a, b, c float64
+		fmt.Print("enter a :- ")
+		fmt.Scan(&a)
+		fmt.Print("enter b :- ")
+		fmt.Scan(&b)
+		fmt.Print("enter c :- ")
+		fmt.Scan(&c)
+		var t Triangle
+		shapes = append(shapes, t.createTriangle(a, b, c))
 	}
 }
 
@@ -125,4 +139,28 @@ func (s Square) createSquare(side float64) Square {
 func (s Square) details() {
 	fmt.Println("Shape type = Square")
 	fmt.Println("side's length :- ", s.side)
+}
+
+type Triangle struct {
+	a float64
+	b float64
+	c float64
+}
+
+func (t Triangle) area() float64 {
+	s := (t.a + t.b + t.c) / 2
+	return math.Sqrt(s * (s - t.a) * (s - t.b) * (s - t.c))
+}
+
+func (t Triangle) perimeter() float64 {
+	return t.a + t.b + t.c
+}
+
+func (t Triangle) details() {
+	fmt.Println("Shape is Triangle")
+	fmt.Println("sides are :-", t.a, t.b, t.c)
+}
+
+func (t Triangle) createTriangle(a, b, c float64) Triangle {
+	return Triangle{a: a, b: b, c: c}
 }
