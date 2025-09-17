@@ -2,6 +2,40 @@ package main
 
 import "fmt"
 
+var Employeelist []Employee
+
+func addEmployee() {
+	var input string
+	fmt.Println("enter a to add Full-Time-Employee and b to add Part-Time-Employee :- ")
+	fmt.Scan(&input)
+
+	switch input {
+	case "a":
+		var name string
+		var baseSalary, bonus float64
+		fmt.Println("enter name of Employee :- ")
+		fmt.Scan(&name)
+		fmt.Println("enter base Salary :- ")
+		fmt.Scan(&baseSalary)
+		fmt.Println("enter bonsu :- ")
+		fmt.Scan(&bonus)
+		var f FullTimeEmployee
+		Employeelist = append(Employeelist, f.createFTE(name, baseSalary, bonus))
+	case "b":
+		var name string
+		var HourlyRate, HoursWorked float64
+		fmt.Println("enter name of the employee :- ")
+		fmt.Scan(&name)
+		fmt.Println("enter hourly rate of employee :- ")
+		fmt.Scan(&HourlyRate)
+		fmt.Println("enter hours worked :- ")
+		fmt.Scan(&HoursWorked)
+
+		var p PartTimeEmployee
+		Employeelist = append(Employeelist, p.createPTE(name, HourlyRate, HoursWorked))
+	}
+}
+
 type Employee interface {
 	salary() float64
 	display()
@@ -30,7 +64,7 @@ func (f FullTimeEmployee) display() {
 	fmt.Println("salary of the employee :- ", f.salary())
 }
 
-func (f FullTimeEmployee) createFTE(name string, baseSalary, bonus float64) FullTimeEmployee {
+func (f FullTimeEmployee) createFTE(name string, baseSalary float64, bonus float64) FullTimeEmployee {
 	return FullTimeEmployee{name: name, baseSalary: baseSalary, bonus: bonus}
 }
 
