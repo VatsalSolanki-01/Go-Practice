@@ -36,6 +36,12 @@ func addEmployee() {
 	}
 }
 
+func displayEmployees() {
+	for _, v := range Employeelist {
+		v.display()
+	}
+}
+
 type Employee interface {
 	salary() float64
 	display()
