@@ -18,7 +18,7 @@ func (b Bookings) bookTickets(BookedInNameOf string, noOfTickets int, email stri
 
 func (b Bookings) Details() {
 	fmt.Println("name of the person who booked tickets is :- ", b.BookedInNameOf)
-	fmt.Println("no. of tickets are :- ", b.noOfTickets)
+	fmt.Println("no. of tickets booked are :- ", b.noOfTickets)
 }
 
 func GoCOnference() {
@@ -38,6 +38,7 @@ func GoCOnference() {
 		case "1":
 			ticketBooking()
 		case "2":
+			remaingSeating()
 		}
 	}
 
@@ -60,5 +61,16 @@ func ticketBooking() {
 		totalTickets -= noOfTickets
 	} else {
 		fmt.Println("sorry seats are full will let you know next time conference is held ")
+	}
+}
+
+func remaingSeating() {
+	fmt.Println("remaing seats available are :- ", totalTickets)
+}
+
+func Booked() {
+	for i, v := range bookings {
+		fmt.Println("booking number :- ", i+1)
+		v.Details()
 	}
 }
