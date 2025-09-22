@@ -1,6 +1,10 @@
 package main
 
+import "time"
+
 func main() {
-	GoCOnference()
-	Booked()
+	go hello()
+	go hi()
+
+	time.Sleep(1001 * time.Millisecond)
 }
