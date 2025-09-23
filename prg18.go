@@ -83,9 +83,9 @@ func updateTaskStatus() {
 	fmt.Println("enter taskid:-")
 	fmt.Scan(&task_id)
 
-	for _, v := range TaskList {
+	for i, v := range TaskList {
 		if v.task_id == task_id {
-			v.taskStatus = true
+			TaskList[i].taskStatus = true
 			flag = true
 			break
 		}
