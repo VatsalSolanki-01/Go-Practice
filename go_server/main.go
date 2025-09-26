@@ -14,7 +14,7 @@ func helloHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {
 		http.Error(w, "Get method is not supported", http.StatusNotFound)
 	}
-	fmt.Fprintf(w, "WASSUPPP niggasss")
+	fmt.Fprintf(w, "WASSUPPP bross")
 }
 
 func formHandler(w http.ResponseWriter, r *http.Request) {
