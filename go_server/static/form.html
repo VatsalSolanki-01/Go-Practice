@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fun Form</title>
+    <style>
+        body {
+            font-family: 'Verdana', sans-serif;
+            background: #ffefba; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .form-box {
+            background: #fff3e0;
+            padding: 30px 40px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        h1 {
+            color: #ff6f61;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"], input[type="email"] {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            width: 80%;
+        }
+
+        button {
+            background: #ff6f61;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background: #ff3b2e;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-box">
+        <h1>📝 Submit Your Info</h1>
+        <form method="POST" action="/form">
+            <input type="text" name="name" placeholder="Enter your name" required /><br/>
+            <input type="text" name="address" placeholder="Enter your address" required /><br/>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+</body>
+</html>
