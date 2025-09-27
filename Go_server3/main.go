@@ -12,7 +12,11 @@ func main() {
 	http.HandleFunc("/students", getStudentsInfo)
 
 	//GET method to get info of specific student based on rollno
-	http.HandleFunc("/student", getStudentInfo)
+	http.HandleFunc("/studentbyroll", getStudentInfo)
+
+	//GET method to get info of specific student based on name
+	http.HandleFunc("/studentbyname", getStudentInfoByName)
+
 	if err := http.ListenAndServe(":8081", nil); err != nil {
 		fmt.Println("error starting server")
 	}
@@ -48,6 +52,7 @@ func getStudentInfo(w http.ResponseWriter, r *http.Request) {
 	roll, err := strconv.Atoi(rollno)
 	if err != nil {
 		http.Error(w, "invalid rollno ", http.StatusBadRequest)
+		return
 	}
 
 	for _, v := range studentList {
@@ -57,5 +62,28 @@ func getStudentInfo(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
+	http.Error(w, "student not found", http.StatusNotFound)
+}
+
+func getStudentInfoByName(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+	}
+
+	studName := r.URL.Query().Get("name")
+
+	if studName == "" {
+		http.Error(w, "name required to get information", http.StatusBadRequest)
+		return
+	}
+
+	for _, v := range studentList {
+		if v.Name == studName {
+			w.Header().Set("Content-type", "application/json")
+			json.NewEncoder(w).Encode(v)
+			return
+		}
+	}
+
 	http.Error(w, "student not found", http.StatusNotFound)
 }
