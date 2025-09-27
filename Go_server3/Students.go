@@ -14,6 +14,6 @@ var studentList = []Student{
 }
 
 type Student struct {
-	Rollno int
-	Name   string
+	Rollno int    `json:"rollno"`
+	Name   string `json:"name"`
 }

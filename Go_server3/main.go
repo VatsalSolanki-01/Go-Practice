@@ -17,6 +17,9 @@ func main() {
 	//GET method to get info of specific student based on name
 	http.HandleFunc("/studentbyname", getStudentInfoByName)
 
+	//Post method to add Students
+	http.HandleFunc("/addstudent", addStudent)
+
 	if err := http.ListenAndServe(":8081", nil); err != nil {
 		fmt.Println("error starting server")
 	}
@@ -86,4 +89,30 @@ func getStudentInfoByName(w http.ResponseWriter, r *http.Request) {
 	}
 
 	http.Error(w, "student not found", http.StatusNotFound)
+}
+
+func addStudent(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	var newStudent Student
+	err := json.NewDecoder(r.Body).Decode(&newStudent)
+
+	if err != nil {
+		http.Error(w, "bad request", http.StatusBadRequest)
+		return
+	}
+
+	if newStudent.Name == "" || newStudent.Rollno == 0 {
+		http.Error(w, "bad request", http.StatusBadRequest)
+		return
+	}
+
+	studentList = append(studentList, newStudent)
+
+	w.Header().Set("Content-type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(newStudent)
 }
