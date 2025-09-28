@@ -19,6 +19,9 @@ func main() {
 	//Post method adding book
 	http.HandleFunc("/addbook", addBook)
 
+	//Put method to update book
+	http.HandleFunc("/updatebook", updateBook)
+
 	fmt.Println("server running on port : 8081")
 	if err := http.ListenAndServe("localhost:8081", nil); err != nil {
 		fmt.Println("error starting server", err)
@@ -97,6 +100,46 @@ func addBook(w http.ResponseWriter, r *http.Request) {
 	Books = append(Books, newBook)
 
 	w.Header().Set("Content-type", "application/json")
-	w.WriteHeader(http.StatusAccepted)
+	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(newBook)
+}
+
+func updateBook(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPut {
+		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	bookId := r.URL.Query().Get("id")
+	if bookId == "" {
+		http.Error(w, "id needed to update", http.StatusBadRequest)
+		return
+	}
+
+	id, err := strconv.Atoi(bookId)
+	if err != nil {
+		http.Error(w, "bad request", http.StatusBadRequest)
+		return
+	}
+
+	var newBook Book
+	json.NewDecoder(r.Body).Decode(&newBook)
+	found := false
+	for i, v := range Books {
+		if v.Id == id {
+			found = true
+
+			Books[i].Title = newBook.Title
+			Books[i].ISBN = newBook.ISBN
+			Books[i].Author = newBook.Author
+			w.Header().Set("Content-type", "application/json")
+			json.NewEncoder(w).Encode(Books[i])
+			break
+		}
+	}
+
+	if found != true {
+		http.Error(w, "book not found", http.StatusNotFound)
+		return
+	}
 }
