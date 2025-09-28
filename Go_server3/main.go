@@ -23,6 +23,9 @@ func main() {
 	//Put method to update available student
 	http.HandleFunc("/updatestudent", updateStudent)
 
+	//Delete method to delete student
+	http.HandleFunc("/deletestudent", deleteStudent)
+
 	if err := http.ListenAndServe(":8081", nil); err != nil {
 		fmt.Println("error starting server")
 	}
@@ -136,7 +139,7 @@ func updateStudent(w http.ResponseWriter, r *http.Request) {
 	rollno, err := strconv.Atoi(stud_rollno)
 
 	if err != nil {
-		http.Error(w, "internal error", http.StatusInternalServerError)
+		http.Error(w, "bad request", http.StatusBadRequest)
 		return
 	}
 
@@ -155,6 +158,40 @@ func updateStudent(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if isAvailable != true {
+		http.Error(w, "student not found", http.StatusNotFound)
+	}
+}
+
+func deleteStudent(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodDelete {
+		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	stud_rollno := r.URL.Query().Get("rollno")
+	if stud_rollno == "" {
+		http.Error(w, "need rollno to delete", http.StatusBadRequest)
+		return
+	}
+
+	rollno, err := strconv.Atoi(stud_rollno)
+	if err != nil {
+		http.Error(w, "bad request", http.StatusBadRequest)
+		return
+	}
+	flag := false
+
+	for i, v := range studentList {
+		if v.Rollno == rollno {
+			flag = true
+			deletedStudent := studentList[i]
+			studentList = append(studentList[:i], studentList[i+1:]...)
+			w.Header().Set("Content-type", "application/json")
+			json.NewEncoder(w).Encode(deletedStudent)
+			return
+		}
+	}
+	if flag != true {
 		http.Error(w, "student not found", http.StatusNotFound)
 	}
 }

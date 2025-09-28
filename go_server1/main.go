@@ -22,6 +22,9 @@ func main() {
 	//Put method to update book
 	http.HandleFunc("/updatebook", updateBook)
 
+	//Delete method to delete book
+	http.HandleFunc("/deletebook", deleteBook)
+
 	fmt.Println("server running on port : 8081")
 	if err := http.ListenAndServe("localhost:8081", nil); err != nil {
 		fmt.Println("error starting server", err)
@@ -141,5 +144,40 @@ func updateBook(w http.ResponseWriter, r *http.Request) {
 	if found != true {
 		http.Error(w, "book not found", http.StatusNotFound)
 		return
+	}
+}
+
+func deleteBook(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodDelete {
+		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	book_id := r.URL.Query().Get("id")
+	if book_id == "" {
+		http.Error(w, "need id to delete book", http.StatusBadRequest)
+		return
+	}
+
+	id, err := strconv.Atoi(book_id)
+
+	if err != nil {
+		http.Error(w, "bad request", http.StatusBadRequest)
+		return
+	}
+
+	flag := false
+	for i, v := range Books {
+		if v.Id == id {
+			flag = true
+			deletedBook := Books[i]
+			Books = append(Books[:i], Books[i+1:]...)
+			w.Header().Set("Content-type", "application/json")
+			json.NewEncoder(w).Encode(deletedBook)
+			return
+		}
+	}
+	if flag != true {
+		http.Error(w, "book not found", http.StatusNotFound)
 	}
 }
