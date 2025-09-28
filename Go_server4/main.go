@@ -23,6 +23,9 @@ func main() {
 	//Post Method to add employee
 	http.HandleFunc("/addemployees", addEmployee)
 
+	//put method to update employee
+	http.HandleFunc("/updateemployee", updateEmployee)
+
 	fmt.Println("server started at port :9191")
 	if err := http.ListenAndServe(":9191", nil); err != nil {
 		fmt.Println("error starting server", err)
@@ -127,4 +130,41 @@ func addEmployee(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(newEmp)
+}
+
+func updateEmployee(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPut {
+		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	emp_id := r.URL.Query().Get("id")
+
+	if emp_id == "" {
+		http.Error(w, "need id to update", http.StatusBadRequest)
+		return
+	}
+
+	id, err := strconv.Atoi(emp_id)
+	if err != nil {
+		http.Error(w, "internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	var newEmployee Employee
+	json.NewDecoder(r.Body).Decode(&newEmployee)
+	flag := false
+	for i, v := range Employees {
+		if v.Id == id {
+			flag = true
+			Employees[i].Name = newEmployee.Name
+			Employees[i].Salary = newEmployee.Salary
+			w.Header().Set("Content-type", "application-json")
+			json.NewEncoder(w).Encode(Employees[i])
+			return
+		}
+	}
+	if flag != true {
+		http.Error(w, "employee not found", http.StatusNotFound)
+	}
 }
