@@ -20,6 +20,9 @@ func main() {
 	//Post method to add Students
 	http.HandleFunc("/addstudent", addStudent)
 
+	//Put method to update available student
+	http.HandleFunc("/updatestudent", updateStudent)
+
 	if err := http.ListenAndServe(":8081", nil); err != nil {
 		fmt.Println("error starting server")
 	}
@@ -115,4 +118,43 @@ func addStudent(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(newStudent)
+}
+
+func updateStudent(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPut {
+		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	stud_rollno := r.URL.Query().Get("rollno")
+
+	if stud_rollno == "" {
+		http.Error(w, "need rollno to update student", http.StatusBadRequest)
+		return
+	}
+
+	rollno, err := strconv.Atoi(stud_rollno)
+
+	if err != nil {
+		http.Error(w, "internal error", http.StatusInternalServerError)
+		return
+	}
+
+	var newStudent Student
+	json.NewDecoder(r.Body).Decode(&newStudent)
+
+	isAvailable := false
+	for i, v := range studentList {
+		if v.Rollno == rollno {
+			isAvailable = true
+			studentList[i].Name = newStudent.Name
+			studentList[i].Rollno = newStudent.Rollno
+			w.Header().Set("Content-type", "application/json")
+			json.NewEncoder(w).Encode(studentList[i])
+		}
+	}
+
+	if isAvailable != true {
+		http.Error(w, "student not found", http.StatusNotFound)
+	}
 }
