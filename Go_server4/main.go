@@ -26,6 +26,9 @@ func main() {
 	//put method to update employee
 	http.HandleFunc("/updateemployee", updateEmployee)
 
+	//Delete method to delete employee
+	http.HandleFunc("/deleteemployee", deleteEmployee)
+
 	fmt.Println("server started at port :9191")
 	if err := http.ListenAndServe(":9191", nil); err != nil {
 		fmt.Println("error starting server", err)
@@ -147,7 +150,7 @@ func updateEmployee(w http.ResponseWriter, r *http.Request) {
 
 	id, err := strconv.Atoi(emp_id)
 	if err != nil {
-		http.Error(w, "internal server error", http.StatusInternalServerError)
+		http.Error(w, "bad request", http.StatusBadRequest)
 		return
 	}
 
@@ -161,6 +164,41 @@ func updateEmployee(w http.ResponseWriter, r *http.Request) {
 			Employees[i].Salary = newEmployee.Salary
 			w.Header().Set("Content-type", "application-json")
 			json.NewEncoder(w).Encode(Employees[i])
+			return
+		}
+	}
+	if flag != true {
+		http.Error(w, "employee not found", http.StatusNotFound)
+	}
+}
+
+func deleteEmployee(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodDelete {
+		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	emp_id := r.URL.Query().Get("id")
+
+	if emp_id == "" {
+		http.Error(w, "id needed to delete", http.StatusBadRequest)
+		return
+	}
+
+	id, err := strconv.Atoi(emp_id)
+
+	if err != nil {
+		http.Error(w, "bad request ", http.StatusBadRequest)
+		return
+	}
+	flag := false
+	for i, v := range Employees {
+		if v.Id == id {
+			flag = true
+			deletedEmploye := Employees[i]
+			Employees = append(Employees[:i], Employees[i+1:]...)
+			w.Header().Set("Content-type", "application/json")
+			json.NewEncoder(w).Encode(deletedEmploye)
 			return
 		}
 	}
